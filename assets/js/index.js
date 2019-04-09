@@ -2,10 +2,10 @@
 
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
-
+// filling our canvas
 context.fillStyle = '#000';
 context.fillRect(0,0,canvas.width,canvas.height);
-
+// scaling size of game pieces
 context.scale(20,20);
 
 const matrix = [
@@ -14,14 +14,21 @@ const matrix = [
   [0,1,0],
 ];
 
-function drawMatrix(matrix){
+function drawMatrix(matrix,offset){
   matrix.forEach((row,y) => {
     row.forEach((value,x) => {
       if(value !== 0){
         context.fillStyle = 'red';
-        context.fillRect(x,y,1,1);
+        context.fillRect(x + offset.x, y + offset.y, 1,1);
       }
     });
   });
 }
-drawMatrix(matrix);
+
+const player = {
+  pos:{x:5, y:5},
+  matrix: matrix,
+};
+
+
+drawMatrix(player.matrix,player.pos);
