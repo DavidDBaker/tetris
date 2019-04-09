@@ -6,12 +6,6 @@ const context = canvas.getContext('2d');
 // scaling size of game pieces
 context.scale(20,20);
 
-const matrix = [
-  [0,0,0],
-  [1,1,1],
-  [0,1,0],
-];
-
 function collision(){
   const [m,o] = [player.matrix, player.pos];
   for (let y = 0; y < m.length; ++y){
@@ -29,6 +23,52 @@ function createMatrix(w,h){
     matrix.push(new Array(w).fill(0));
   }
   return matrix;
+}
+
+function createPiece(type){
+  if (type === 'T'){
+    return [
+      [0,0,0],
+      [1,1,1],
+      [0,1,0],
+    ];
+  } else if (type === 'o'){
+    return [
+      [1,1],
+      [1,1],
+    ];
+  } else if (type === 'l'){
+    return [
+      [0,1,0],
+      [0,1,0],
+      [0,1,1],
+    ];
+  } else if (type === 'j'){
+    return [
+      [0,1,0],
+      [0,1,0],
+      [1,1,0],
+    ];
+  } else if (type === 'j'){
+    return [
+      [0,1,0,0],
+      [0,1,0,0],
+      [0,1,0,0],
+      [0,1,0,0],
+    ];
+  } else if (type === 's'){
+    return [
+      [0,1,1],
+      [1,1,0],
+      [0,0,0],
+    ];
+  } else if (type === 'z'){
+    return [
+      [1,1,0],
+      [0,1,1],
+      [0,0,0],
+    ];
+  }
 }
 
 function draw(){
@@ -77,6 +117,8 @@ function playerMove(dir){
     player.pos.x -= dir;
   }
 }
+
+
 
 function playerRotate(dir){
   const pos = player.pos.x;
@@ -133,7 +175,7 @@ function update(time = 0){
 
 const player = {
   pos:{x:5, y:5},
-  matrix: matrix,
+  matrix: createPiece('T'),
 };
 
 const arena = createMatrix(12,20);
