@@ -6,12 +6,15 @@ const context = canvas.getContext('2d');
 // scaling size of game pieces
 context.scale(20,20);
 
-function collision(){
-  const [m,o] = [player.matrix, player.pos];
-  for (let y = 0; y < m.length; ++y){
-    for (let x = 0; x < m[y].length; ++x){
-      if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0)
+function collision(arena, player) {
+  const m = player.matrix;
+  const o = player.pos;
+  for (let y = 0; y < m.length; ++y) {
+    for (let x = 0; x < m[y].length; ++x) {
+      if (m[y][x] !== 0 &&
+               (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
         return true;
+      }
     }
   }
   return false;
@@ -69,6 +72,18 @@ function createPiece(type){
       [0,0,0],
     ];
   }
+  return;
+}
+
+function drawMatrix(matrix, offset) {
+  matrix.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value !== 0) {
+        context.fillStyle = 'red';
+        context.fillRect(x + offset.x, y + offset.y, 1, 1);
+      }
+    });
+  });
 }
 
 function draw(){
@@ -78,17 +93,6 @@ function draw(){
 
   drawMatrix(arena,{x:0,y:0});
   drawMatrix(player.matrix,player.pos);
-}
-
-function drawMatrix(matrix,offset){
-  matrix.forEach((row,y) => {
-    row.forEach((value,x) => {
-      if(value !== 0){
-        context.fillStyle = 'red';
-        context.fillRect(x + offset.x, y + offset.y, 1,1);
-      }
-    });
-  });
 }
 
 function merge(arena,player){
@@ -104,10 +108,9 @@ function merge(arena,player){
 function playerDrop(){
   player.pos.y++;
   if (collision(arena, player)) {
-    player.pos.y --;
+    player.pos.y--;
     merge(arena,player);
     playerReset();
-    player.pos.y = 0;
   }
   dropCounter = 0;
 }
@@ -119,11 +122,14 @@ function playerMove(dir){
   }
 }
 
-function playerReset(){
-   const pieces = 'ILJOTSZ';
-   player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
-   player.pos.y = 0;
-   player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+function playerReset() {
+  const pieces = 'TJLOSZI';
+  player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+  player.pos.y = 0;
+  player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+  if (collision(arena, player)) {
+    arena.forEach(row => row.fill(0));
+  }
 }
 
 function playerRotate(dir){
